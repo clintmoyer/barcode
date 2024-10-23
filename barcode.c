@@ -17,6 +17,7 @@
 #include <X11/Xlib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define WIDTH 400
 #define HEIGHT 200
@@ -97,6 +98,14 @@ void draw_upc(Display *display, Window window, GC gc, const char *upc_code) {
 }
 
 int main(int argc, char *argv[]) {
+    // Validate input
+    if (argc != 2 || strlen(argv[1]) != 12) {
+        fprintf(stderr, "Usage: %s <12-digit UPC>\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+
+    const char *upc_code = argv[1];
+
     // X11 setup
     Display *display = XOpenDisplay(NULL);
     if (display == NULL) {
@@ -117,6 +126,10 @@ int main(int argc, char *argv[]) {
     XEvent event;
     while (1) {
         XNextEvent(display, &event);
+        if (event.type == Expose) {
+            // Draw the UPC-A barcode on the window
+            draw_upc(display, window, gc, upc_code);
+        }
         if (event.type == KeyPress) {
             break;
         }
