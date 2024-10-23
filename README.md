@@ -33,6 +33,8 @@ Once compiled, run the program by passing a 12-digit UPC-A code as an argument:
 
 This will display the barcode for the given UPC-A code in an X11 window.
 
+![screenshot](https://github.com/user-attachments/assets/f9b3de95-84e5-4e07-8686-96efc0055db0)
+
 ## Structure of UPC-A Barcode
 
 - A UPC-A barcode is 12 digits long.
@@ -49,20 +51,6 @@ This will display the barcode for the given UPC-A code in an X11 window.
 Each digit is represented by a 7-bit binary pattern. The left and right sides use different encodings:
 - **Left side encoding**: Odd parity.
 - **Right side encoding**: Even parity.
-
-## Example
-
-Running the command:
-
-```bash
-./barcode 036000291452
-```
-
-Generates a barcode with the following structure:
-- Left guard: `101`
-- Encoded digits: `036000` (left side) and `291452` (right side)
-- Center guard: `01010`
-- Right guard: `101`
 
 ## Notes
 
