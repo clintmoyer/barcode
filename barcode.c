@@ -35,6 +35,67 @@ const char *left_guard = "101";
 const char *center_guard = "01010";
 const char *right_guard = "101";
 
+// Function to draw a line in the X11 window
+void draw_line(Display *display, Window window, GC gc, int x1, int y1, int x2, int y2) {
+    XDrawLine(display, window, gc, x1, y1, x2, y2);
+}
+
+// Function to draw the UPC-A barcode
+void draw_upc(Display *display, Window window, GC gc, const char *upc_code) {
+    int x = 50;        // Start X position for barcode drawing
+    int y = 50;        // Top Y position
+    int bar_width = 2; // Width of each bar
+    int height = 100;  // Height of the barcode
+
+    // Draw left guard
+    for (int i = 0; i < 3; i++) {
+        if (left_guard[i] == '1') {
+            draw_line(display, window, gc, x, y, x, y + height);
+        }
+        x += bar_width;
+    }
+
+    // Draw left-side digits
+    for (int i = 0; i < 6; i++) {
+        int digit = upc_code[i] - '0';
+        const char *encoding = left_encoding[digit];
+        for (int j = 0; j < 7; j++) {
+            if (encoding[j] == '1') {
+                draw_line(display, window, gc, x, y, x, y + height);
+            }
+            x += bar_width;
+        }
+    }
+
+    // Draw center guard
+    for (int i = 0; i < 5; i++) {
+        if (center_guard[i] == '1') {
+            draw_line(display, window, gc, x, y, x, y + height);
+        }
+        x += bar_width;
+    }
+
+    // Draw right-side digits
+    for (int i = 6; i < 12; i++) {
+        int digit = upc_code[i] - '0';
+        const char *encoding = right_encoding[digit];
+        for (int j = 0; j < 7; j++) {
+            if (encoding[j] == '1') {
+                draw_line(display, window, gc, x, y, x, y + height);
+            }
+            x += bar_width;
+        }
+    }
+
+    // Draw right guard
+    for (int i = 0; i < 3; i++) {
+        if (right_guard[i] == '1') {
+            draw_line(display, window, gc, x, y, x, y + height);
+        }
+        x += bar_width;
+    }
+}
+
 int main(int argc, char *argv[]) {
     // X11 setup
     Display *display = XOpenDisplay(NULL);
